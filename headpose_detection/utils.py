@@ -97,7 +97,7 @@ class Annotator():
         px, py, dy = int(5 * self.fs), int(25 * self.fs), int(30 * self.fs)
         font = cv2.FONT_HERSHEY_DUPLEX
         fs = self.fs
-        cv2.putText(self.im, "Concentration: %d" % self.concent,(px, py), font, fontScale=fs, color=fontColor)
-#         cv2.putText(self.im, "X: %+06.2f" % x, (px, py), font, fontScale=fs, color=fontColor)
-#         cv2.putText(self.im, "Y: %+06.2f" % y, (px, py + dy), font, fontScale=fs, color=fontColor)
-#         cv2.putText(self.im, "Z: %+06.2f" % z, (px, py + 2 * dy), font, fontScale=fs, color=fontColor)
+        #cv2.putText(self.im, "Concentration: %d" % self.concent,(px, py), font, fontScale=fs, color=fontColor)
+        cv2.putText(self.im, "X: %+06.2f" % x, (px, py), font, fontScale=fs, color=fontColor)
+        cv2.putText(self.im, "Y: %+06.2f" % y, (px, py + dy), font, fontScale=fs, color=fontColor)
+        cv2.putText(self.im, "Z: %+06.2f" % z, (px, py + 2 * dy), font, fontScale=fs, color=fontColor)

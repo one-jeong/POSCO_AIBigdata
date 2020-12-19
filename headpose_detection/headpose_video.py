@@ -21,15 +21,15 @@ def main(args):
         cap = cv2.VideoCapture(0)
         cap.set(3, args['wh'][0])
         cap.set(4, args['wh'][1])
-    else:
-        isVideo = True
-        cap = cv2.VideoCapture(filename)
-        fps = cap.get(cv2.CAP_PROP_FPS)
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        name, ext = osp.splitext(filename)
-        out = cv2.VideoWriter(args["output_file"], fourcc, fps, (width, height))
+#     else:
+#         isVideo = True
+#         cap = cv2.VideoCapture(filename)
+#         fps = cap.get(cv2.CAP_PROP_FPS)
+#         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+#         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+#         fourcc = cv2.VideoWriter_fourcc(*'XVID')
+#         name, ext = osp.splitext(filename)
+#         out = cv2.VideoWriter(args["output_file"], fourcc, fps, (width, height))
 
     # Initialize head pose detection
     hpd = headpose.HeadposeDetection(args["landmark_type"], args["landmark_predictor"])

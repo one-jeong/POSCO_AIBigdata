@@ -10,6 +10,7 @@ import dlib
 import numpy as np
 import os
 import os.path as osp
+import pandas as pd
 
 from timer import Timer
 from utils import Annotator
@@ -61,6 +62,38 @@ class HeadposeDetection():
         [33, 17, 21, 22, 26, 36, 39, 42, 45, 31, 35, 48, 54, 57, 8], # 14 points
         [33, 36, 39, 42, 45] # 5 points
     ]
+    
+    
+    head_move_x_list = [
+        -0.05768933615863209, 0.4624817647112173, -0.41989617786315836, -1.3942402546150017,
+        -2.622525688576741, -2.864574859018932, -3.183193933107425, -4.3115627751028285,
+        -5.930371167632655, -7.272487268011647, -7.961363213601079, -8.664985030093296,
+        -8.549039184187412, -8.619535303531894, -6.615241827021224, -5.235016740980941,
+        -3.950923563842068, -3.920389835550417, -3.4765685709053993, -3.2610399702035697,
+        -3.371107797873432, -2.4814013914354347, -0.5211529322627431, 1.191575230425789,
+        1.2215795497566504, 0.692075267300992, -0.6060450764064008, -2.1464077498539846,
+        -3.5380441213412968, -4.210041133981368, -4.359937729789175, -5.630314792620588,
+        -6.878548187341292, -8.426184756317982, -8.606534086291001, -7.917052015833634,
+        -6.92932378063517, -6.228060133580227, -6.068434974820051, -5.109462434799199,
+        -4.146164060254387, -2.9784994241413996, -2.6065841683320725, -1.3411528731001683,
+        -0.08291347028406204   
+    ]
+    
+    
+    head_move_y_list = [
+        -10.42173249679414, -12.439688655699586, -14.985145453751677, -17.75673993970492,
+        -20.201356353872615, -18.77534482720391, -17.119838097677828, -13.895136615876524,
+        -9.095153383787776, -2.468875118586527, 2.9046842765055456, 5.842905631916588,
+        7.839929113887245, 10.39987714635792, 13.76329921463863, 16.60191775055887,
+        18.880069969272398, 19.55244648781394, 19.491093850110577, 18.234227641273467,
+        14.24919826784064, 9.661341886466733, 6.267347108452546, 4.491080092031438,
+        2.234132929469296, -0.6644194494123566, -5.293084015852091, -8.918979089042116,
+        -11.90000162057785, -13.207000855771607, -14.577298119503, -15.389240619195457,
+        -14.599356029407405, -13.302216884857794, -10.381185246394336, -7.143830802859435,
+        -2.3277699210243514, 1.1621729235455986, 4.962388322075049, 7.180009332452449,
+        9.877786439665794, 12.494929995772347, 15.1138395811587, 16.816394494305445,
+        17.70715419494105 
+    ]
 
     def __init__(self, lm_type=1, predictor="model/shape_predictor_68_face_landmarks.dat", verbose=True):
         self.bbox_detector = dlib.get_frontal_face_detector()        
@@ -71,7 +104,12 @@ class HeadposeDetection():
 
         self.v = verbose
         
+        self.flag = 0
+        
         self.concent = 100
+        
+        self.x_list = []
+        self.y_list = []
 
 
     def to_numpy(self, landmarks):
@@ -184,8 +222,45 @@ class HeadposeDetection():
         cv2.putText(im, "Concentration: %d" %self. concent,(px,py),font,fontScale=fs,color=fontColor)
 
     
-    
-    
+    # 집중도 평가하는 부분
+    def cal_angle(self, im, angle):
+        x,y,z = angle
+        
+        self.x_list.append(x)
+        self.y_list.append(y)
+        
+        
+        if len(self.x_list) > 45:
+            del self.x_list[0]
+            
+            df = pd.DataFrame({"v1":self.x_list, "v2":self.head_move_x_list})
+            corr = df.corr(method="pearson")
+            corr = corr.iloc[0,1]
+            if corr > 0.8:
+                print("****agree*****", corr)
+                
+        if len(self.y_list) > 45:
+            del self.y_list[0]
+            
+            df = pd.DataFrame({"v1":self.y_list, "v2":self.head_move_y_list})
+            corr = df.corr(method="pearson")
+            corr = corr.iloc[0,1]
+            if corr > 0.8:
+                print("****not agree***", corr)
+                
+                
+                
+        # 화면 밖을 보고 있는지 판단
+        if y > 23 or y < -23:
+            print("화면을 안보고 있음!!")
+            pass
+        
+        #print(self.y_list)
+            
+            
+            
+       
+        
     # return image and angles
     def process_image(self, im, draw=True, ma=3):
         # landmark Detection
@@ -198,12 +273,24 @@ class HeadposeDetection():
         # if no face deteced, return original image
         # 좌표가 검출되지 않았으면 기존이미지 다시 return
         if landmarks_2d is None:
-            self.concent -= 1
+            # 머리가 2분이상 검출되지 않은 경우 잠자고 있다고 탐지
+            if self.flag == 0:
+                t.tic('sleep')
+                self.flag=1
+            else:
+                if t.toc('sleep') > 120000:
+                    print("sleep!!!")
+            
+            
+            if self.concent > 20:
+                self.concent -= 1
             # 집중도 표시
             self.draw_concent(im)
             return im, None
         
-        self.concent += 1
+        if self.concent < 100:
+            self.concent += 1
+        self.flag = 0
 
         # Headpose Detection
         t.tic('hp')
@@ -222,7 +309,11 @@ class HeadposeDetection():
         angles = self.get_angles(rvec, tvec)
         if self.v: 
             print(', ga: %.2f' % t.toc('ga'), end='ms')
-
+        
+        # 각도에 따른 집중도 및 이해도 판단 함수
+        self.cal_angle(im, angles)
+          
+        
         if draw:
             t.tic('draw')
             annotator = Annotator(im, angles, bbox, landmarks_2d, rvec, tvec, cm, dc, b=10.0, concent = self.concent)
