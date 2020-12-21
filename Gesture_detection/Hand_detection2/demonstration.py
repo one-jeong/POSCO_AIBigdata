@@ -6,7 +6,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from PIL import ImageFont, ImageDraw, Image
  
 # %%
-model = load_model('./models/question_model.h5')
+model = load_model('./models/question_model2.h5')
 model.summary()
  
 # open webcam (웹캠 열기)
@@ -41,11 +41,11 @@ while webcam.isOpened():
     print(predicted_class)
     
     if predicted_class == 0:
-        me = "question"
-        is_question.append(1)
-    elif predicted_class == 1:
         me = "idle"
         is_question.append(0)
+    elif predicted_class == 1:
+        me = "question"
+        is_question.append(1)
         
     if sum(is_question[-15:]) == 15:
         print('I GOT A QUESTION!!!')

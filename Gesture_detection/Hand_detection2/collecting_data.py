@@ -10,10 +10,10 @@ def createFolder(directory):
     except OSError:
         print ('Error: Creating directory. ' +  directory)
  
-IMAGES_PATH = 'C:/Users/moon/Documents/PJ2/Hand_detection2/images/'
+IMAGES_PATH = './images/'
 
 labels = ['idle','question']
-number_imgs = 10
+number_imgs = 40
 
 for label in labels:
     createFolder(IMAGES_PATH + label)
