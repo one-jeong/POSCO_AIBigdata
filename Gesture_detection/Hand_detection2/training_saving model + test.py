@@ -5,6 +5,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
+from sklearn.model_selection import train_test_split
 from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
 # - 어플리케이션
 #     : 이미지넷 (ImageNet)으로 사전 학습된 10가지 잘 알려진 모델을 제공
@@ -16,7 +17,7 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 # from sklearn.model_selection import train_test_split
 
 path_dir1 = './images/idle/'
-path_dir2 = './images/question/'
+path_dir2 = './images/question2/'
 
 file_list1 = os.listdir(path_dir1) # path에 존재하는 파일 목록 가져오기
 file_list2 = os.listdir(path_dir2)
@@ -84,13 +85,13 @@ model.summary()
  
 h = model.fit(trainX, trainY, epochs=10, validation_data = (testX,testY))
 
-plt.plot(h.history['loss'], label='Train loss')
-plt.plot(h.history['test_loss'], label='Test loss')
-plt.title('Loss trajectory')
-plt.legend()
-plt.show()
+# plt.plot(h.history['loss'], label='Train loss')
+# plt.plot(h.history['test_loss'], label='Test loss')
+# plt.title('Loss trajectory')
+# plt.legend()
+# plt.show()
 
 # save model
-model.save("./models/question_model2.h5")
+model.save("./models/question_model3.h5")
 
 print("Saved model to disk")  
