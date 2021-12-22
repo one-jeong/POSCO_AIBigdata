@@ -14,7 +14,7 @@
 <img width="80%" src="https://user-images.githubusercontent.com/22339360/147032632-db9bfe46-28c0-4bd5-9943-ed8adc07b1b9.png"/>
 - 프로젝트 개요 : 대면/비대면 수업 간 격차를 줄이고 교육자와 학습자의 상호작용을 돕는 AI 기반 시스템
 <img width="80%" src="https://user-images.githubusercontent.com/22339360/147032862-7af32a3e-ddcd-4c0b-b3d9-85d62681c2b0.png"/>
-<img width="80%" src="https://user-images.githubusercontent.com/22339360/147032862-7af32a3e-ddcd-4c0b-b3d9-85d62681c2b0.png"/>
+<img width="80%" src="https://user-images.githubusercontent.com/22339360/147033153-548d4311-60c3-4eef-83b0-28a4f600701f.png"/>
 - 프로젝트 소개 :
 <img width="80%" src="https://user-images.githubusercontent.com/22339360/147033051-ab149b45-e5e5-4b16-bee5-3a98d2e04226.png"/>
 
